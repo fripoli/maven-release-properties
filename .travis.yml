@@ -2,4 +2,6 @@ language: java
 before_script:
   - mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}'.$TRAVIS_BUILD_NUMBER -DgenerateBackupPoms=false
 after_success:
+  - git config --global user.name  "Travis CI"
+  - git config --global user.email "builds@travis-ci.com"
   - mvn scm:tag -Dtag='${project.version}' -Dmessage='VERSION ${project.version}'
