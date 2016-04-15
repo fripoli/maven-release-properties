@@ -1,17 +1,20 @@
 language: java
 before_script:
-  - mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}'.$TRAVIS_BUILD_NUMBER -DgenerateBackupPoms=false
-  - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
+- mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}'.$TRAVIS_BUILD_NUMBER -DgenerateBackupPoms=false
+- echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 after_success:
-  - git config --global user.name  "Travis CI"
-  - git config --global user.email "builds@travis-ci.com"
-  - git config credential.helper "store --file=.git/credentials"
-  - git add pom.xml
-  - git commit -m "Tagging build"
-  - mvn scm:tag -Dtag='${project.version}' -Dmessage='VERSION ${project.version}'
+- git config --global user.name  "Travis CI"
+- git config --global user.email "builds@travis-ci.com"
+- git config credential.helper "store --file=.git/credentials"
+- git add pom.xml
+- git commit -m "Tagging build"
+- mvn scm:tag -Dtag='${project.version}' -Dmessage='VERSION ${project.version}'
+- mvn deploy --settings settings.xml
 env:
   global:
-    secure: EoNoxW3OtReJn0oTBlDU/QQmm67+v+vxn7GLb69GDKubHbQ14kSwvGN5omY1YI2WVm7yT31Ydzn9r00SaeySrrdPY+uyZrq08jNafmqDIo2JsA1Fu/nYUBSznLmXlySB9klBVmiGGa5AdLivOvFYN9Lz9KYlb2MBRYBMOENiqYLu6vPdYEeMyVWH6GcjkXYKXQxXYDVOhGY+/H/b8QfBQTcCsLEC8UIh0wTxrQRZDB72Hnj+1xUiAG6dKfqPxzk7huXBPO+/5OwQJpBQYK1KP1Db3iInfzSwq429m4L8RLtmgf7sPXQSuhuHpYZ3oXuQvAxtl+NZWN3lcQQbmuAFslLdYuQzIhPFGkWPVljvn3TB+Soc2qxEedyJZidrXYMDjs8YM/3Fl55Ard6HxQap2zFIEn+2sFExLXFX5NXLob/+4IgNojVqvV8UAKO8FPPe2oF9R4tHqUte6lVHY06ORzjxnVddcw6QKC3daLRDy5jkzZCLxwGD2x0RwGkuntYv/tqSJccU8l/CO3EvMRPOoo7ctDyvo2f17SNuvIbv1KtmxwKbdtaxVmfTPuIb71g+bNl80AZgNtxB3sqfpozbo1MmFLgGGTtB7WekmuF2LHbnx8vZS+bTvNJEd4rXoe6K6zA/FqxzT9KI9s4364Odi32Fep5lEjWco+JNYjhgyBs=
+  - SONATYPE_USERNAME: xico@ripoli.com.br
+  - secure: EoNoxW3OtReJn0oTBlDU/QQmm67+v+vxn7GLb69GDKubHbQ14kSwvGN5omY1YI2WVm7yT31Ydzn9r00SaeySrrdPY+uyZrq08jNafmqDIo2JsA1Fu/nYUBSznLmXlySB9klBVmiGGa5AdLivOvFYN9Lz9KYlb2MBRYBMOENiqYLu6vPdYEeMyVWH6GcjkXYKXQxXYDVOhGY+/H/b8QfBQTcCsLEC8UIh0wTxrQRZDB72Hnj+1xUiAG6dKfqPxzk7huXBPO+/5OwQJpBQYK1KP1Db3iInfzSwq429m4L8RLtmgf7sPXQSuhuHpYZ3oXuQvAxtl+NZWN3lcQQbmuAFslLdYuQzIhPFGkWPVljvn3TB+Soc2qxEedyJZidrXYMDjs8YM/3Fl55Ard6HxQap2zFIEn+2sFExLXFX5NXLob/+4IgNojVqvV8UAKO8FPPe2oF9R4tHqUte6lVHY06ORzjxnVddcw6QKC3daLRDy5jkzZCLxwGD2x0RwGkuntYv/tqSJccU8l/CO3EvMRPOoo7ctDyvo2f17SNuvIbv1KtmxwKbdtaxVmfTPuIb71g+bNl80AZgNtxB3sqfpozbo1MmFLgGGTtB7WekmuF2LHbnx8vZS+bTvNJEd4rXoe6K6zA/FqxzT9KI9s4364Odi32Fep5lEjWco+JNYjhgyBs=
+  - secure: J0JQkL6CUwG/zTynmbuDNl7BgTXEzzKmu+ekCx0J8Me+gsElbxcdQGRzPDv/iJsnIn9Odsh6OhXb0+YPHxZFmL6/TwzKoIcsw6ywCfs4M55hr6I8GuYXBs8lTuefmFVm4LP4kxwAXndx+5rIHrACVfk6U4BGQOSA6xDNvwHsijbsXIthY6cpHmf7ll0Ijy9hkCDhEp+U7+HhPfJNKKazlJZrx/SVkAbTU2/Me8wRL3Hh4LwUQotpIwLH5abTInhc9PGjQ/T426otL6CoBeCUKNEziwtw2xpxiESN2m4jCyf+D9cVZp79U+5LzV9wOXz2Dmf/9Dhz3XZUQ3KPK328SHDOnF7/Ef8e5EMmdrwoUzK0JIqzMn9GXzLjjt0k4wnEKyK1p7S6zkKniYpBUs8FQ1On8BB4goQdfkJDO0Zbs51iEY4c4jgr70xoeT7g8rL8CsKjdeVBj1XFkvfiPJuMV16VkcvTQyNBLKvBMDeIhrxvpFLN9ycG28USG4aA7fyVIfWE3tLVIpcPeliQp2rwDF2xr/6ugxQ8nDQyvZvhDGcKr8So8HfLXI0sd98K06RAfk50rzv5oKUecZJbq0MaxbhR0ylHqUAj3joMPuB8V8c3MUFQ8f4fHKqs1U11n+izusfkxJQgP7J5mklaA9q8l/oOmNQ9q2iYLAh7v8K0qB4=
 branches:
   except:
-    - /^[0-9]+.*/
+  - "/^[0-9]+.*/"
