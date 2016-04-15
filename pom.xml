@@ -12,7 +12,7 @@
 
   <scm>
     <url>https://github.com/fripoli/maven-release-properties</url>
-    <connection>scm:git:git://github.com/fripoli/maven-release-properties.git</connection>
+    <connection>scm:git:https://github.com/fripoli/maven-release-properties.git</connection>
     <developerConnection>scm:git:git@github.com:fripoli/maven-release-properties.git</developerConnection>
   </scm>
 
