@@ -9,6 +9,7 @@
   <packaging>maven-plugin</packaging>
   <name>RELEASE Properties Plugin</name>
   <description>A maven plugin that lists all properties with version RELEASE or LATEST.</description>
+  <url>https://github.com/fripoli/maven-release-properties</url>
 
   <scm>
     <url>https://github.com/fripoli/maven-release-properties</url>
@@ -22,6 +23,13 @@
       <distribution>repo</distribution>
     </license>
   </licenses>
+
+  <developers>
+    <developer>
+      <name>Francisco Ripoli</name>
+      <email>xico@ripoli.com.br</email>
+    </developer>
+  </developers>
 
   <distributionManagement>
     <snapshotRepository>
@@ -42,6 +50,29 @@
     <mockito.version>1.10.8</mockito.version>
   </properties>
 
+  <profiles>
+    <profile>
+      <id>sign</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>1.6</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+  </profiles>
   <dependencies>
     <dependency>
       <groupId>org.apache.maven</groupId>

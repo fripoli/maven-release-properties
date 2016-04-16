@@ -1,6 +1,11 @@
 language: java
+before_install:
+- openssl aes-256-cbc -K $encrypted_e4e59171f6a7_key -iv $encrypted_e4e59171f6a7_iv
+  -in cd/codesigning.asc.enc -out cd/codesigning.asc -d
+- gpg --fast-import cd/codesigning.asc
 before_script:
-- mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}'.$TRAVIS_BUILD_NUMBER -DgenerateBackupPoms=false
+- mvn build-helper:parse-version versions:set -DnewVersion='${parsedVersion.majorVersion}.${parsedVersion.minorVersion}'.$TRAVIS_BUILD_NUMBER
+  -DgenerateBackupPoms=false
 - echo "https://${GH_TOKEN}:@github.com" > .git/credentials
 after_success:
 - git config --global user.name  "Travis CI"
@@ -9,12 +14,14 @@ after_success:
 - git add pom.xml
 - git commit -m "Tagging build"
 - mvn scm:tag -Dtag='${project.version}' -Dmessage='VERSION ${project.version}'
-- mvn deploy --settings settings.xml
+- mvn deploy -Psign --settings cd/settings.xml -DskipTests=true -B
 env:
   global:
   - SONATYPE_USERNAME: xico@ripoli.com.br
   - secure: EoNoxW3OtReJn0oTBlDU/QQmm67+v+vxn7GLb69GDKubHbQ14kSwvGN5omY1YI2WVm7yT31Ydzn9r00SaeySrrdPY+uyZrq08jNafmqDIo2JsA1Fu/nYUBSznLmXlySB9klBVmiGGa5AdLivOvFYN9Lz9KYlb2MBRYBMOENiqYLu6vPdYEeMyVWH6GcjkXYKXQxXYDVOhGY+/H/b8QfBQTcCsLEC8UIh0wTxrQRZDB72Hnj+1xUiAG6dKfqPxzk7huXBPO+/5OwQJpBQYK1KP1Db3iInfzSwq429m4L8RLtmgf7sPXQSuhuHpYZ3oXuQvAxtl+NZWN3lcQQbmuAFslLdYuQzIhPFGkWPVljvn3TB+Soc2qxEedyJZidrXYMDjs8YM/3Fl55Ard6HxQap2zFIEn+2sFExLXFX5NXLob/+4IgNojVqvV8UAKO8FPPe2oF9R4tHqUte6lVHY06ORzjxnVddcw6QKC3daLRDy5jkzZCLxwGD2x0RwGkuntYv/tqSJccU8l/CO3EvMRPOoo7ctDyvo2f17SNuvIbv1KtmxwKbdtaxVmfTPuIb71g+bNl80AZgNtxB3sqfpozbo1MmFLgGGTtB7WekmuF2LHbnx8vZS+bTvNJEd4rXoe6K6zA/FqxzT9KI9s4364Odi32Fep5lEjWco+JNYjhgyBs=
   - secure: J0JQkL6CUwG/zTynmbuDNl7BgTXEzzKmu+ekCx0J8Me+gsElbxcdQGRzPDv/iJsnIn9Odsh6OhXb0+YPHxZFmL6/TwzKoIcsw6ywCfs4M55hr6I8GuYXBs8lTuefmFVm4LP4kxwAXndx+5rIHrACVfk6U4BGQOSA6xDNvwHsijbsXIthY6cpHmf7ll0Ijy9hkCDhEp+U7+HhPfJNKKazlJZrx/SVkAbTU2/Me8wRL3Hh4LwUQotpIwLH5abTInhc9PGjQ/T426otL6CoBeCUKNEziwtw2xpxiESN2m4jCyf+D9cVZp79U+5LzV9wOXz2Dmf/9Dhz3XZUQ3KPK328SHDOnF7/Ef8e5EMmdrwoUzK0JIqzMn9GXzLjjt0k4wnEKyK1p7S6zkKniYpBUs8FQ1On8BB4goQdfkJDO0Zbs51iEY4c4jgr70xoeT7g8rL8CsKjdeVBj1XFkvfiPJuMV16VkcvTQyNBLKvBMDeIhrxvpFLN9ycG28USG4aA7fyVIfWE3tLVIpcPeliQp2rwDF2xr/6ugxQ8nDQyvZvhDGcKr8So8HfLXI0sd98K06RAfk50rzv5oKUecZJbq0MaxbhR0ylHqUAj3joMPuB8V8c3MUFQ8f4fHKqs1U11n+izusfkxJQgP7J5mklaA9q8l/oOmNQ9q2iYLAh7v8K0qB4=
+  - secure: TWxRUPN7HzRb0fOc+wfL3nPD/vIeyJz1rzl+j1SwgrCN7uCs1Z2spYuTrxpSUkBWXcnyE6qQuVGFH5v28tFyAQ5sDaFJpXOOrLSPYjwjXAKVKJ6R9Q0NBIro2NBChh3IFJMCJu6Xumbcc0HW2D7fD7M3jITThcVAwT+cI+dG85aj7Qy2gBu96sp8NZTGABOSX9uU7miUW1WQIiqesY8Je/Tw7B3dTT3vKpPayapFrdS//yhCg0w6JDbnyc8KvmMiFv3gZ745+kmjvDLjBvOq1tRGFWVXHqc8uxZfwB++4g8rKD/pUFZp1jvDAW5CeN1Y3UnWmz92reI89Rs1lpRaCevcCfrTSl+1mNyX5E3VvfsPU+ipO0fUNMX1TuGal4KspUNxcbuw/xrCcmqIJmzAxIEIpMvrehDD76wejZ0Z9bQDeeNw3wgO5cp1dn9mGwJw+voRBU1fIg5QN2wox3ap30bp8dWlujCJm81La1q/rEsptvpzf3vwfTEpVlVTMqkWPbQ/rhxH/5vAyyy6Z0it42j0LW3cGTvIRGrfkjEFTCeUjXaR5eFZPENXcvFTe8eG4pfKD9IV5z/mICzDvvQ+gxNE2Ji0FZWteHoGmgk9m31fSDR+a0y3f5KciWi2jatbQHG32iAZJHvG8e65QFxNrj0YmMZbXCFzFvddrdtzcE0=
+  - secure: Xh5yg69IKXCoADgiaHjEw1463Suxd039N71aF+Z9WYP7kNpGqCyREVKZpCWOONmFJQtgC3KyCViigq/zcCtvLpK8BaemGlr4mc2U/2FjaqtCVJ2gfxK8KRV71NI2kVI1vIFzdlAcUHvH573SX4sM5xgTUjJmRuU38IDtttrlV06U1aNqVuke3B02gi/JIoZ0ScGOPSYr/pOPreuPLvu3HjBO9OUTkeTDAE6OV4kOYASnRbPAp7IMX/DJj+BU5w+ogv01OSnFZuEBGfb1U7P+3za6e6fB9lQosZLKqDZ2OKL+ys7px2H7eCHhlTuGrsI2NlDbt06dQozZkNgimogW24G78gOcWitMNKjUd1cWjHQS4A6BDCF6BpbFGFsAtG5ALQ7AFu946r7wdiikGf34Yrh0P+ET9WU3MvgBu+/qz6WwW+pj58w4wFFX86EZZwMFWevprzFAcCcD+R62WJWsVDlH8pV/aU6tft5gSx+hoHuyF5SIpG85cXSAYbeAyvHzFJPjrjN9d8MXfe/go2v++WP9QStpp5v1+OBM+27qaWtYVNWBPz6+mchW4qC9eei7sTCPoTOtOAsA50Iozw28b6D3vKlaFE4X5bDjJjMpb2qF6yyL/DwkRpEmx+iBbYVLDEAHN/nQK5MX038dewV/kvOq3dvLNljH+VfL0DcEvWU=
 branches:
   except:
   - "/^[0-9]+.*/"
