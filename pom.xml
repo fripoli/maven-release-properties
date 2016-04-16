@@ -48,6 +48,7 @@
     <junit.version>4.8.2</junit.version>
     <maven-plugin-annotations.version>3.4</maven-plugin-annotations.version>
     <mockito.version>1.10.8</mockito.version>
+    <maven-enforcer-plugin.version>1.4.1</maven-enforcer-plugin.version>
   </properties>
 
   <profiles>
@@ -79,7 +80,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-enforcer-plugin</artifactId>
-        <version>1.4.1</version>
+        <version>${maven-enforcer-plugin.version}</version>
         <executions>
           <execution>
             <id>enforce-maven</id>
