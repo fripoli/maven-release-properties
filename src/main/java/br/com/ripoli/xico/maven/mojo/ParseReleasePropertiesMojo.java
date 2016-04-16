@@ -1,4 +1,4 @@
-package br.com.ripoli.xico.maven.enforcer.rule;
+package br.com.ripoli.xico.maven.mojo;
 
 import java.util.LinkedHashSet;
 import java.util.Set;

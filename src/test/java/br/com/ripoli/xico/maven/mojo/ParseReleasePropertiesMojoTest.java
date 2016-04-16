@@ -1,4 +1,4 @@
-package br.com.ripoli.xico.maven.enforcer.rule;
+package br.com.ripoli.xico.maven.mojo;
 
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.eq;
