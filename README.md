@@ -16,4 +16,4 @@ This plugin only have one goal
 
 This plugin's main usage is combining with the versions:update-properties mojo:
 
-**mvn release-properties:parse versions:update-properties -DincludeProperties='${propertiesOnRelease}'**
+```mvn release-properties:parse versions:update-properties -DincludeProperties='${propertiesOnRelease}'```
