@@ -28,6 +28,7 @@ public class ParseReleasePropertiesMojoTest {
     private static final String PROPERTIES_ON_RELEASE = "propertiesOnRelease";
     private static final String PROPERTIES_ON_LATEST = "propertiesOnLatest";
     private static final String PROPERTIES_ON_RELEASE_AND_LATEST = "propertiesOnReleaseAndLatest";
+    private static final String MOCKITO_VERSION_JUNIT_VERSION = MOCKITO_VERSION + "," + JUNIT_VERSION;
 
     @Mock
     private MavenProject mavenProject;
@@ -87,8 +88,8 @@ public class ParseReleasePropertiesMojoTest {
 
         parseReleasePropertiesMojo.execute();
 
-        verify(properties).put(eq(PROPERTIES_ON_RELEASE), eq("mockito.version,junit.version"));
-        verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq("mockito.version,junit.version"));
+        verify(properties).put(eq(PROPERTIES_ON_RELEASE), eq(MOCKITO_VERSION_JUNIT_VERSION));
+        verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq(MOCKITO_VERSION_JUNIT_VERSION));
     }
 
     @Test
@@ -99,14 +100,14 @@ public class ParseReleasePropertiesMojoTest {
         when(properties.keySet()).thenReturn(propertiesSet);
         when(properties.getProperty(MOCKITO_VERSION)).thenReturn(Artifact.RELEASE_VERSION);
         when(properties.getProperty(JUNIT_VERSION)).thenReturn(Artifact.LATEST_VERSION);
-        when(properties.getProperty(PROPERTIES_ON_RELEASE)).thenReturn("mockito.version");
+        when(properties.getProperty(PROPERTIES_ON_RELEASE)).thenReturn(MOCKITO_VERSION);
 
         parseReleasePropertiesMojo.execute();
 
-        verify(properties).put(eq(PROPERTIES_ON_RELEASE), eq("mockito.version"));
-        verify(properties).put(eq(PROPERTIES_ON_LATEST), eq("junit.version"));
-        verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq("mockito.version"));
-        verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq("mockito.version,junit.version"));
+        verify(properties).put(eq(PROPERTIES_ON_RELEASE), eq(MOCKITO_VERSION));
+        verify(properties).put(eq(PROPERTIES_ON_LATEST), eq(JUNIT_VERSION));
+        verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq(MOCKITO_VERSION));
+        verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq(MOCKITO_VERSION_JUNIT_VERSION));
     }
 
 }
