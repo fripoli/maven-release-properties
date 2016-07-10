@@ -5,7 +5,7 @@
 A maven plugin to list all properties on RELEASE or LATEST
 
 ## Goal ##
-This plugin only have one goal
+This plugin only has one goal
 
 * **mvn release-properties:parse** will read all properties of the pom file and make available to the project:
   * **propertiesOnRelease** - a comma separated value of all properties on RELEASE
