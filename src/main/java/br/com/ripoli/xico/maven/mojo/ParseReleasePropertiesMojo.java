@@ -22,6 +22,7 @@ public class ParseReleasePropertiesMojo extends AbstractMojo {
     private static final String PROPERTIES_ON_RELEASE = "propertiesOnRelease";
     private static final String PROPERTIES_ON_LATEST = "propertiesOnLatest";
     private static final String PROPERTIES_ON_RELEASE_AND_LATEST = "propertiesOnReleaseAndLatest";
+    private static final String NONE = "none";
 
     @Parameter(readonly = true, defaultValue = "${project}")
     private MavenProject mavenProject;
@@ -48,6 +49,9 @@ public class ParseReleasePropertiesMojo extends AbstractMojo {
             mavenProject.getProperties().put(PROPERTIES_ON_RELEASE_AND_LATEST, commaSeparatedProperties);
 
             getLog().info("Properties on RELEASE: " + commaSeparatedProperties);
+        } else {
+            mavenProject.getProperties().put(PROPERTIES_ON_RELEASE, NONE);
+            mavenProject.getProperties().put(PROPERTIES_ON_RELEASE_AND_LATEST, NONE);
         }
 
         if (!propertiesOnLatest.isEmpty()) {
@@ -58,19 +62,13 @@ public class ParseReleasePropertiesMojo extends AbstractMojo {
             getLog().info("Properties on LATEST: " + commaSeparatedProperties);
 
             joinReleaseAndLatestProperties(commaSeparatedProperties);
+        } else {
+            mavenProject.getProperties().put(PROPERTIES_ON_LATEST, NONE);
         }
     }
 
     private void joinReleaseAndLatestProperties(String propertiesOnLatest) {
-        String allProperties;
-        String propertiesOnRelease = mavenProject.getProperties().getProperty(PROPERTIES_ON_RELEASE);
-
-        if (propertiesOnRelease != null) {
-            allProperties = propertiesOnRelease + "," + propertiesOnLatest;
-        } else {
-            allProperties = propertiesOnLatest;
-        }
-
-        mavenProject.getProperties().put(PROPERTIES_ON_RELEASE_AND_LATEST, allProperties);
+        mavenProject.getProperties().put(PROPERTIES_ON_RELEASE_AND_LATEST,
+                mavenProject.getProperties().getProperty(PROPERTIES_ON_RELEASE) + "," + propertiesOnLatest);
     }
 }
