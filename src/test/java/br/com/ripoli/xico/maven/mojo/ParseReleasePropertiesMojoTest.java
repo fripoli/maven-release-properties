@@ -29,6 +29,7 @@ public class ParseReleasePropertiesMojoTest {
     private static final String PROPERTIES_ON_LATEST = "propertiesOnLatest";
     private static final String PROPERTIES_ON_RELEASE_AND_LATEST = "propertiesOnReleaseAndLatest";
     private static final String MOCKITO_VERSION_JUNIT_VERSION = MOCKITO_VERSION + "," + JUNIT_VERSION;
+    private static final String NONE = "none";
 
     @Mock
     private MavenProject mavenProject;
@@ -45,10 +46,15 @@ public class ParseReleasePropertiesMojoTest {
     }
 
     @Test
-    public void shouldNotAddAnythingToMavenProject() throws Exception {
+    public void shouldAddNoneIfNoPropertyOnLatest() throws Exception {
+        Set<Object> propertiesSet = new HashSet<Object>();
+        when(properties.keySet()).thenReturn(propertiesSet);
+
         parseReleasePropertiesMojo.execute();
 
-        verify(properties, never()).put(anyObject(), anyObject());
+        verify(properties).put(eq(PROPERTIES_ON_RELEASE), eq(NONE));
+        verify(properties).put(eq(PROPERTIES_ON_LATEST), eq(NONE));
+        verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq(NONE));
     }
 
     @Test
@@ -61,6 +67,7 @@ public class ParseReleasePropertiesMojoTest {
         parseReleasePropertiesMojo.execute();
 
         verify(properties).put(eq(PROPERTIES_ON_RELEASE), eq(MOCKITO_VERSION));
+        verify(properties).put(eq(PROPERTIES_ON_LATEST), eq(NONE));
         verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq(MOCKITO_VERSION));
     }
 
@@ -70,11 +77,12 @@ public class ParseReleasePropertiesMojoTest {
         propertiesSet.add(MOCKITO_VERSION);
         when(properties.keySet()).thenReturn(propertiesSet);
         when(properties.getProperty(MOCKITO_VERSION)).thenReturn(Artifact.LATEST_VERSION);
+        when(properties.getProperty(PROPERTIES_ON_RELEASE)).thenReturn(NONE);
 
         parseReleasePropertiesMojo.execute();
 
         verify(properties).put(eq(PROPERTIES_ON_LATEST), eq(MOCKITO_VERSION));
-        verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq(MOCKITO_VERSION));
+        verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq(NONE + "," + MOCKITO_VERSION));
     }
 
     @Test
@@ -89,6 +97,7 @@ public class ParseReleasePropertiesMojoTest {
         parseReleasePropertiesMojo.execute();
 
         verify(properties).put(eq(PROPERTIES_ON_RELEASE), eq(MOCKITO_VERSION_JUNIT_VERSION));
+        verify(properties).put(eq(PROPERTIES_ON_LATEST), eq(NONE));
         verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq(MOCKITO_VERSION_JUNIT_VERSION));
     }
 

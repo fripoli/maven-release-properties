@@ -68,15 +68,7 @@ public class ParseReleasePropertiesMojo extends AbstractMojo {
     }
 
     private void joinReleaseAndLatestProperties(String propertiesOnLatest) {
-        String allProperties;
-        String propertiesOnRelease = mavenProject.getProperties().getProperty(PROPERTIES_ON_RELEASE);
-
-        if (propertiesOnRelease != null) {
-            allProperties = propertiesOnRelease + "," + propertiesOnLatest;
-        } else {
-            allProperties = propertiesOnLatest;
-        }
-
-        mavenProject.getProperties().put(PROPERTIES_ON_RELEASE_AND_LATEST, allProperties);
+        mavenProject.getProperties().put(PROPERTIES_ON_RELEASE_AND_LATEST,
+                mavenProject.getProperties().getProperty(PROPERTIES_ON_RELEASE) + "," + propertiesOnLatest);
     }
 }
