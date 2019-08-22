@@ -1,16 +1,5 @@
 package br.com.ripoli.xico.maven.mojo;
 
-import static org.mockito.Matchers.anyObject;
-import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
-import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.Properties;
-import java.util.Set;
-
 import org.apache.maven.artifact.Artifact;
 import org.apache.maven.project.MavenProject;
 import org.junit.Before;
@@ -19,6 +8,14 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+
+import java.util.HashSet;
+import java.util.Properties;
+import java.util.Set;
+
+import static org.mockito.Matchers.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ParseReleasePropertiesMojoTest {
@@ -41,13 +38,13 @@ public class ParseReleasePropertiesMojoTest {
     private ParseReleasePropertiesMojo parseReleasePropertiesMojo;
 
     @Before
-    public void setUp() throws Exception {
+    public void setUp() {
         when(mavenProject.getProperties()).thenReturn(properties);
     }
 
     @Test
-    public void shouldAddNoneIfNoPropertyOnLatest() throws Exception {
-        Set<Object> propertiesSet = new HashSet<Object>();
+    public void shouldAddNoneIfNoPropertyOnLatest() {
+        Set<Object> propertiesSet = new HashSet<>();
         when(properties.keySet()).thenReturn(propertiesSet);
 
         parseReleasePropertiesMojo.execute();
@@ -58,8 +55,8 @@ public class ParseReleasePropertiesMojoTest {
     }
 
     @Test
-    public void shouldAddOneReleasePropertyToMavenProject() throws Exception {
-        Set<Object> propertiesSet = new HashSet<Object>();
+    public void shouldAddOneReleasePropertyToMavenProject() {
+        Set<Object> propertiesSet = new HashSet<>();
         propertiesSet.add(MOCKITO_VERSION);
         when(properties.keySet()).thenReturn(propertiesSet);
         when(properties.getProperty(MOCKITO_VERSION)).thenReturn(Artifact.RELEASE_VERSION);
@@ -72,22 +69,21 @@ public class ParseReleasePropertiesMojoTest {
     }
 
     @Test
-    public void shouldAddOneLatestPropertyToMavenProject() throws Exception {
-        Set<Object> propertiesSet = new HashSet<Object>();
+    public void shouldAddOneLatestPropertyToMavenProject() {
+        Set<Object> propertiesSet = new HashSet<>();
         propertiesSet.add(MOCKITO_VERSION);
         when(properties.keySet()).thenReturn(propertiesSet);
         when(properties.getProperty(MOCKITO_VERSION)).thenReturn(Artifact.LATEST_VERSION);
-        when(properties.getProperty(PROPERTIES_ON_RELEASE)).thenReturn(NONE);
 
         parseReleasePropertiesMojo.execute();
 
         verify(properties).put(eq(PROPERTIES_ON_LATEST), eq(MOCKITO_VERSION));
-        verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq(NONE + "," + MOCKITO_VERSION));
+        verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq(MOCKITO_VERSION));
     }
 
     @Test
-    public void shouldAddTwoReleasePropertyToMavenProject() throws Exception {
-        Set<Object> propertiesSet = new LinkedHashSet<Object>();
+    public void shouldAddTwoReleasePropertyToMavenProject() {
+        Set<Object> propertiesSet = new HashSet<>();
         propertiesSet.add(MOCKITO_VERSION);
         propertiesSet.add(JUNIT_VERSION);
         when(properties.keySet()).thenReturn(propertiesSet);
@@ -102,20 +98,18 @@ public class ParseReleasePropertiesMojoTest {
     }
 
     @Test
-    public void shouldAddOneReleaseAndOneLatestPropertyToMavenProject() throws Exception {
-        Set<Object> propertiesSet = new HashSet<Object>();
+    public void shouldAddOneReleaseAndOneLatestPropertyToMavenProject() {
+        Set<Object> propertiesSet = new HashSet<>();
         propertiesSet.add(MOCKITO_VERSION);
         propertiesSet.add(JUNIT_VERSION);
         when(properties.keySet()).thenReturn(propertiesSet);
         when(properties.getProperty(MOCKITO_VERSION)).thenReturn(Artifact.RELEASE_VERSION);
         when(properties.getProperty(JUNIT_VERSION)).thenReturn(Artifact.LATEST_VERSION);
-        when(properties.getProperty(PROPERTIES_ON_RELEASE)).thenReturn(MOCKITO_VERSION);
 
         parseReleasePropertiesMojo.execute();
 
         verify(properties).put(eq(PROPERTIES_ON_RELEASE), eq(MOCKITO_VERSION));
         verify(properties).put(eq(PROPERTIES_ON_LATEST), eq(JUNIT_VERSION));
-        verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq(MOCKITO_VERSION));
         verify(properties).put(eq(PROPERTIES_ON_RELEASE_AND_LATEST), eq(MOCKITO_VERSION_JUNIT_VERSION));
     }
 
